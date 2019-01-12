@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.session.SessionManagementFilter;
 
 import static com.nimble.sloth.router.auth.Role.AUTHENTICATED;
@@ -15,8 +16,12 @@ import static org.springframework.http.HttpMethod.POST;
 public class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
     private final AuthProvider provider;
+    private final AuthenticationEntryPoint entryPoint;
 
-    public SecurityConfigurationAdapter(final AuthProvider provider) {
+    public SecurityConfigurationAdapter(
+            final AuthProvider provider,
+            final AuthenticationEntryPointImpl entryPoint) {
+        this.entryPoint = entryPoint;
         this.provider = provider;
     }
 
@@ -35,7 +40,7 @@ public class SecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().disable()
                 .csrf().disable()
-                .exceptionHandling()
+                .exceptionHandling().authenticationEntryPoint(entryPoint)
                 .and()
                 .authorizeRequests()
                 .antMatchers(GET, "/status").permitAll()
