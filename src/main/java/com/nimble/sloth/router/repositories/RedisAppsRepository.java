@@ -29,11 +29,15 @@ public class RedisAppsRepository implements AppsRepository {
 
     @Override
     public Optional<String> getTokenForApp(final String appId) {
+        return getAppDetails(appId).map(App::getToken);
+    }
+
+    @Override
+    public Optional<App> getAppDetails(final String appId) {
         final RedisKey key = makeKey(appId);
         return base
                 .get(key)
-                .map(this::deserialize)
-                .map(App::getToken);
+                .map(this::deserialize);
     }
 
     private RedisKey makeKey(final String key) {
