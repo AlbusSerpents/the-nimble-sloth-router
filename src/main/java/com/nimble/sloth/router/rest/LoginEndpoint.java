@@ -12,10 +12,11 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/login")
 public class LoginEndpoint {
     private final AuthService service;
 
@@ -24,10 +25,16 @@ public class LoginEndpoint {
     }
 
     @ResponseStatus(CREATED)
-    @RequestMapping(value = "", method = POST)
+    @RequestMapping(value = "/login", method = POST)
     public AuthResponse login(
             final HttpSession session,
             final @RequestBody @Valid LoginRequest request) {
         return service.authenticate(request, session.getId());
+    }
+
+    @ResponseStatus(NO_CONTENT)
+    @RequestMapping(value = "global/logout", method = DELETE)
+    public void logout(final HttpSession session) {
+        session.invalidate();
     }
 }
