@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @ResponseStatus(NOT_FOUND)
 class NoResult extends RuntimeException {
 
-    public static final String MESSAGE = "No result for %s";
+    private static final String MESSAGE = "No result for %s";
 
     NoResult(final RedisKey key) {
         super(toMessage(key));
