@@ -14,6 +14,10 @@ public class AuthService {
         this.provider = provider;
     }
 
+    public AuthResponse authenticate(final LoginRequest request, final String sessionId) {
+        return authenticate(request.getAppId(), request.getToken(), sessionId);
+    }
+
     public AuthResponse authenticate(
             final String appId,
             final String token,
