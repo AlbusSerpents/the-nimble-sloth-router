@@ -1,21 +1,21 @@
-package com.nimble.sloth.router.repositories;
+package com.nimble.sloth.router.func.exceptions;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static org.springframework.http.HttpStatus.BAD_GATEWAY;
 
 @ResponseStatus(BAD_GATEWAY)
-class BadFormat extends RuntimeException {
+public class BadFormat extends CustomException {
 
     private static final String DESERIALIZE_MESSAGE = "Can't parse %s";
-    private static final String SERIALIZE_MESSAGE = "Can't serialize object";
+    private static final String RESPONSE_MESSAGE = "Corrupt data";
 
-    BadFormat(final String json) {
-        super(toMessage(json));
+    public BadFormat(final String json) {
+        super(RESPONSE_MESSAGE, toMessage(json));
     }
 
-    BadFormat(final Exception e) {
-        super(SERIALIZE_MESSAGE, e);
+    public BadFormat(final Exception e) {
+        super(RESPONSE_MESSAGE, e);
     }
 
     private static String toMessage(final String json) {

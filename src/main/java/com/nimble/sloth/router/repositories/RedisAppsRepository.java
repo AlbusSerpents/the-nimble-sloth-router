@@ -3,6 +3,7 @@ package com.nimble.sloth.router.repositories;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimble.sloth.router.func.apps.App;
 import com.nimble.sloth.router.func.apps.AppsRepository;
+import com.nimble.sloth.router.func.exceptions.BadFormat;
 import com.nimble.sloth.router.repositories.BaseRedisRepository.RedisKey;
 import org.springframework.stereotype.Repository;
 

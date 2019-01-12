@@ -1,5 +1,6 @@
 package com.nimble.sloth.router.repositories;
 
+import com.nimble.sloth.router.func.exceptions.Missing;
 import org.springframework.stereotype.Repository;
 import redis.clients.jedis.Jedis;
 
@@ -7,6 +8,7 @@ import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
+@SuppressWarnings("WeakerAccess")
 @Repository
 public class BaseRedisRepository {
     private final Jedis jedis;
@@ -26,7 +28,7 @@ public class BaseRedisRepository {
     }
 
     public String getRequired(final RedisKey redisKey) {
-        return get(redisKey).orElseThrow(() -> new NoResult(redisKey));
+        return get(redisKey).orElseThrow(() -> new Missing(redisKey));
     }
 
     public Optional<String> put(final RedisKey redisKey, final String value) {
