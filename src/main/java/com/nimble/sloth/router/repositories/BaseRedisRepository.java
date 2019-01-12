@@ -1,5 +1,7 @@
 package com.nimble.sloth.router.repositories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimble.sloth.router.func.exceptions.BadFormat;
 import com.nimble.sloth.router.func.exceptions.Missing;
 import org.springframework.stereotype.Repository;
 import redis.clients.jedis.Jedis;
@@ -12,6 +14,7 @@ import static java.util.Optional.ofNullable;
 @Repository
 public class BaseRedisRepository {
     private final Jedis jedis;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public BaseRedisRepository(final Jedis jedis) {
         this.jedis = jedis;
@@ -21,19 +24,47 @@ public class BaseRedisRepository {
         String getKey();
     }
 
-    public Optional<String> get(final RedisKey redisKey) {
+    public <T> Optional<T> get(
+            final RedisKey redisKey,
+            final Class<T> responseClass) {
         final String key = redisKey.getKey();
         final String result = jedis.get(key);
-        return ofNullable(result);
+        return ofNullable(result)
+                .map(value -> deserialize(value, responseClass));
     }
 
-    public String getRequired(final RedisKey redisKey) {
-        return get(redisKey).orElseThrow(() -> new Missing(redisKey));
+    public <T> T getRequired(
+            final RedisKey redisKey,
+            final Class<T> responseClass) {
+        return get(redisKey, responseClass).orElseThrow(() -> new Missing(redisKey));
     }
 
-    public Optional<String> put(final RedisKey redisKey, final String value) {
+    public void put(final RedisKey redisKey, final String value) {
         final String key = redisKey.getKey();
-        final String result = jedis.set(key, value);
-        return ofNullable(result);
+        jedis.set(key, value);
     }
+
+    public <T> void put(final RedisKey redisKey, final T object) {
+        final String key = redisKey.getKey();
+        final String value = serialize(object);
+        jedis.set(key, value);
+    }
+
+
+    private <T> T deserialize(final String json, final Class<T> resultClass) {
+        try {
+            return mapper.readValue(json, resultClass);
+        } catch (Exception e) {
+            throw new BadFormat(json);
+        }
+    }
+
+    private <T> String serialize(final T object) {
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (Exception e) {
+            throw new BadFormat(e);
+        }
+    }
+
 }
