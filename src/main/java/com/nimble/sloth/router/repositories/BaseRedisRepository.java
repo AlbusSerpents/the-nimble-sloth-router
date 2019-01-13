@@ -33,25 +33,36 @@ public class BaseRedisRepository {
                 .map(value -> deserialize(value, responseClass));
     }
 
+    public String getRequired(final RedisKey redisKey) {
+        final String key = redisKey.getKey();
+        final String result = jedis.get(key);
+        return ofNullable(result).orElseThrow(() -> new Missing(redisKey));
+    }
+
     public <T> T getRequired(
             final RedisKey redisKey,
             final Class<T> responseClass) {
         return get(redisKey, responseClass).orElseThrow(() -> new Missing(redisKey));
     }
 
-    public void put(final RedisKey redisKey, final String value) {
-        final String key = redisKey.getKey();
-        jedis.set(key, value);
-    }
-
-    public <T> void put(final RedisKey redisKey, final T object) {
+    public <T> void put(
+            final RedisKey redisKey,
+            final T object) {
         final String key = redisKey.getKey();
         final String value = serialize(object);
         jedis.set(key, value);
     }
 
+    public void putString(
+            final RedisKey redisKey,
+            final String value) {
+        final String key = redisKey.getKey();
+        jedis.set(key, value);
+    }
 
-    private <T> T deserialize(final String json, final Class<T> resultClass) {
+    private <T> T deserialize(
+            final String json,
+            final Class<T> resultClass) {
         try {
             return mapper.readValue(json, resultClass);
         } catch (Exception e) {

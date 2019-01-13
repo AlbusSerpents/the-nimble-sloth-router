@@ -31,17 +31,17 @@ public class RedisStatusRepository implements StatusRepository {
 
     @Override
     public String getApplicationName() {
-        return base.getRequired(ApplicationStatusKeys.NAME, String.class);
+        return base.getRequired(ApplicationStatusKeys.NAME);
     }
 
     @Override
     public String getApplicationAddress() {
-        return base.getRequired(ApplicationStatusKeys.ADDRESS, String.class);
+        return base.getRequired(ApplicationStatusKeys.ADDRESS);
     }
 
     @Override
     public void setApplicationStatus(final ApplicationStatus status) {
-        base.put(ApplicationStatusKeys.NAME, status.getApplicationName());
-        base.put(ApplicationStatusKeys.ADDRESS, status.getApplicationAddress());
+        base.putString(ApplicationStatusKeys.NAME, status.getApplicationName());
+        base.putString(ApplicationStatusKeys.ADDRESS, status.getApplicationAddress());
     }
 }
