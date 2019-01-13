@@ -1,9 +1,6 @@
 package com.nimble.sloth.router.func.status;
 
-import com.nimble.sloth.router.func.liveliness.Liveliness;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class StatusService {
@@ -24,9 +21,5 @@ public class StatusService {
     public ApplicationStatus createStatus(final ApplicationStatus status) {
         repository.setApplicationStatus(status);
         return getStatus();
-    }
-
-    public List<Liveliness> statusReport() {
-        return repository.statusReport();
     }
 }

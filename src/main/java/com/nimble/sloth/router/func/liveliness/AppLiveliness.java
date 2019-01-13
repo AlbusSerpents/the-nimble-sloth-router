@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Liveliness {
+public class AppLiveliness {
     private String applicationName;
     private String applicationAddress;
-    private ApplicationStatusOption applicationStatus;
+    private LivelinessStatus applicationStatus;
 
-    public enum ApplicationStatusOption {
+    public enum LivelinessStatus {
         OK, NOT_RESPONDING, DOWN
     }
 }
